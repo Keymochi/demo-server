@@ -16,3 +16,4 @@ gevent
 gunicorn
 sklearn
 scipy
+numpy
