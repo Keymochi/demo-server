@@ -8,6 +8,7 @@ This file creates your application.
 
 import os
 from flask import Flask, render_template, request, redirect, url_for
+from predict_by_previous import predict_by_previous
 import json
 
 # FIREBASE_PROJECT_ID = os.environ.get('FIREBASE_PROJECT_ID', 'this_should_be_configured')
@@ -38,8 +39,11 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    content = request.get_json(silent=True)
-    return json.dumps({'emotion': 'undefined'})
+    data = request.get_json(silent=True)
+    #print(data['emotion'])
+    #print(data['user'])
+    result = predict_by_previous([data])[0]
+    return json.dumps({'emotion': result})
 
 ###
 # The functions below should be applicable to all Flask apps.
