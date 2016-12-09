@@ -8,20 +8,24 @@ This file creates your application.
 
 import os
 from flask import Flask, render_template, request, redirect, url_for
-import pyrebase
+import json
+
+# FIREBASE_PROJECT_ID = os.environ.get('FIREBASE_PROJECT_ID', 'this_should_be_configured')
+# firebase = firebase.FirebaseApplication('https://' + FIREBASE_PROJECT_ID + '.firebaseio.com', None)
+
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configured')
 
-FIREBASE_PROJECT_ID = os.environ.get('FIREBASE_PROJECT_ID', 'this_should_be_configured')
+# firebase = pyrebase.initialize_app({
+#     'apiKey': os.environ.get('FIREBASE_API_KEY', 'this_should_be_configured'),
+#     'authDomain': FIREBASE_PROJECT_ID + '.firebaseapp.com',
+#     'databaseURL': 'https://' + FIREBASE_PROJECT_ID + '.firebaseio.com',
+#     'storageBucket': FIREBASE_PROJECT_ID + '.appspot.com'
+# })
 
-firebase = pyrebase.initialize_app({
-    'apiKey': os.environ.get('FIREBASE_API_KEY', 'this_should_be_configured'),
-    'authDomain': FIREBASE_PROJECT_ID + '.firebaseapp.com',
-    'databaseURL': 'https://' + FIREBASE_PROJECT_ID + '.firebaseio.com',
-    'storageBucket': FIREBASE_PROJECT_ID + '.appspot.com'
-})
+# db = firebase.database()
 
 ###
 # Routing for your application.
@@ -30,19 +34,12 @@ firebase = pyrebase.initialize_app({
 @app.route('/')
 def home():
     """Render website's home page."""
-    return render_template('home.html')
+    return '<h1>Keymochi Demo Server</h1>'
 
-
-@app.route('/about/')
-def about():
-    """Render the website's about page."""
-    return render_template('about.html')
-
-@app.route('/hi')
-def hi():
-    db = firebase.database()
-    users = db.child('users').get()
-    return 'hi' + len(users)
+@app.route('/predict', methods=['POST'])
+def predict():
+    content = request.get_json(silent=True)
+    return json.dumps({'emotion': 'undefined'})
 
 ###
 # The functions below should be applicable to all Flask apps.
