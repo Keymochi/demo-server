@@ -8,11 +8,20 @@ This file creates your application.
 
 import os
 from flask import Flask, render_template, request, redirect, url_for
+import pyrebase
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configured')
 
+FIREBASE_PROJECT_ID = os.environ.get('FIREBASE_PROJECT_ID', 'this_should_be_configured')
+
+firebase = pyrebase.initialize_app({
+    'apiKey': os.environ.get('FIREBASE_API_KEY', 'this_should_be_configured'),
+    'authDomain': FIREBASE_PROJECT_ID + '.firebaseapp.com',
+    'databaseURL': 'https://' + FIREBASE_PROJECT_ID + '.firebaseio.com',
+    'storageBucket': FIREBASE_PROJECT_ID + '.appspot.com'
+})
 
 ###
 # Routing for your application.
@@ -29,6 +38,11 @@ def about():
     """Render the website's about page."""
     return render_template('about.html')
 
+@app.route('/hi')
+def hi():
+    db = firebase.database()
+    users = db.child('users').get()
+    return 'hi' + len(users)
 
 ###
 # The functions below should be applicable to all Flask apps.
